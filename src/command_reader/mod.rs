@@ -45,6 +45,13 @@ impl Gateway {
                         },
                         Err(m) => say(message, m),
                     }} else {say(message, "not a valid player")},
+                    Drain(name, category, amount) => if has(&players, name) {match players[name].spend_single(category.clone(), amount) {
+                        Ok(state) => match state {
+                            Exhausted(category) => say(message, format!("exhausted of all {}", category)),
+                            _ => say(message, format!("{} spent successfully", category)),
+                        },
+                        Err(m) => say(message, m),
+                    }} else {say(message, "not a valid player")},
                     Damage(name, amount) => if has(&players, name) {match players[name].damage(amount) {
                         Dead => {players.remove(name); say(message, format!("{} just straight up died", players[name].name))},
                         Fight => say(message, format!("{} has entered fight or flight", players[name].name)),
@@ -97,6 +104,7 @@ pub enum Command {
     New(String),
     Add(usize, String, u8),
     Spend(usize, String, u8),
+    Drain(usize, String, u8),
     Damage(usize, u8),
     Sleep(usize),
     Meal(usize),

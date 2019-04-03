@@ -48,6 +48,19 @@ impl EventHandler for Gateway {
                     self.send(Invalid("too short".to_string()), message)
                 }
             },
+            "!dr" => {
+                if resliced.len() > 3 {
+                    match resliced[1].parse() {
+                        Ok(value_a) => match resliced[3].parse() {
+                            Ok(value_b) => self.send(Drain(value_a, resliced[2].clone(), value_b), message),
+                            Err(_) => self.send(Invalid("quantity not a number".to_string()), message),
+                        },
+                        Err(_) => self.send(Invalid("playerID not a number".to_string()), message),
+                    }
+                } else {
+                    self.send(Invalid("too short".to_string()), message)
+                }
+            },
             "!d" => {
                 if resliced.len() > 2 {
                     match resliced[1].parse() {
@@ -136,7 +149,7 @@ impl EventHandler for Gateway {
             },
             "!save" => self.send(Save, message),
             "!load" => self.send(Load, message),
-            "!h" => self.send(Invalid("n -> new player\na -> add stat\nsp -> spend\nd -> damage\nsl -> sleep\nm -> meal\nsn -> snack\ne -> end\np -> print stats\nr -> restore lost points".to_string()), message),
+            "!h" => self.send(Invalid("n -> new player\na -> add stat\nsp -> spend\ndr -> drain\nd -> damage\nsl -> sleep\nm -> meal\nsn -> snack\ne -> end\np -> print stats\nr -> restore lost points".to_string()), message),
             _ => self.send(Invalid("Invalid command".to_string()), message),
         }
     }

@@ -51,7 +51,7 @@ impl Player {
         self.stats.insert(cat.clone(), value);
         self.statsmax.insert(cat.clone(), value);
     }
-    fn spend_single(&mut self, cat: String, amount: u8) -> Result<PlayerState, String> {
+    pub fn spend_single(&mut self, cat: String, amount: u8) -> Result<PlayerState, String> {
         if self.stats.contains_key(&cat) {
             if self.stats[&cat] < amount {
                 return Err(String::from("not enough"));
